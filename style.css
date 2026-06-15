@@ -1,0 +1,208 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== BODY ===== */
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #1c1c1c 0%, #000 70%);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===== HERO ===== */
+.hero {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  perspective: 2000px;
+}
+
+/* ===== HEADLINE ===== */
+.headline {
+    position: absolute;
+    top: 4%;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+}
+
+.subtitle {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.headline h1 {
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+
+    background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #d6d6d6 50%,
+        #808080 100%
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 30px rgba(255,255,255,0.15),
+        0 0 60px rgba(255,255,255,0.08);
+}
+
+.headline p {
+    margin-top: 12px;
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+/* ===== 3D CAROUSEL ===== */
+.image-section {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  width: 340px;
+  height: 520px;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%);
+  animation: rotateCarousel 18s linear infinite;
+}
+
+/* Pause rotation when hovering carousel */
+.image-section:hover {
+  animation-play-state: paused;
+}
+
+/* ===== CARD ===== */
+.card {
+  position: absolute;
+  width: 340px;
+  height: 520px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* ===== IMAGE ===== */
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(255, 255, 255, 0.1);
+
+  transition: all 0.5s ease;
+}
+
+/* ===== NAME TAG ===== */
+.card span {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+
+  padding: 12px 24px;
+  border-radius: 30px;
+
+  opacity: 0;
+  transition: all 0.4s ease;
+  white-space: nowrap;
+}
+
+/* ===== HOVER EFFECT ===== */
+.card:hover img {
+  transform: scale(1.08);
+  box-shadow:
+    0 35px 70px rgba(0, 0, 0, 0.7),
+    0 0 35px rgba(255, 255, 255, 0.2);
+}
+
+.card:hover span {
+  opacity: 1;
+  bottom: 35px;
+}
+
+/* ===== 3D POSITIONS ===== */
+.card:nth-child(1) {
+  transform: rotateY(0deg) translateZ(450px);
+}
+
+.card:nth-child(2) {
+  transform: rotateY(90deg) translateZ(450px);
+}
+
+.card:nth-child(3) {
+  transform: rotateY(180deg) translateZ(450px);
+}
+
+.card:nth-child(4) {
+  transform: rotateY(270deg) translateZ(450px);
+}
+
+/* ===== CAROUSEL ANIMATION ===== */
+@keyframes rotateCarousel {
+  from {
+    transform: translate(-50%, -50%) rotateY(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotateY(360deg);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  /* .headline h1 {
+    font-size: 2.8rem;
+    letter-spacing: 5px;
+  } */
+
+  .image-section {
+    width: 240px;
+    height: 380px;
+  }
+
+  .card {
+    width: 240px;
+    height: 380px;
+  }
+
+  .card:nth-child(1) {
+    transform: rotateY(0deg) translateZ(300px);
+  }
+
+  .card:nth-child(2) {
+    transform: rotateY(90deg) translateZ(300px);
+  }
+
+  .card:nth-child(3) {
+    transform: rotateY(180deg) translateZ(300px);
+  }
+
+  .card:nth-child(4) {
+    transform: rotateY(270deg) translateZ(300px);
+  }
+}

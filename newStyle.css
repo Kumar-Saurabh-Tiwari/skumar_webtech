@@ -1,0 +1,81 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+  font-family:Arial, sans-serif;
+}
+
+.hero{
+  min-height:250vh;
+}
+
+/* Huge Title */
+.headline{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:sticky;
+  top:0;
+}
+
+.headline h1{
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.9;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: -0.04em;
+
+  animation: textZoom linear forwards;
+  animation-timeline: view();
+  animation-range: 0vh 100vh;
+}
+
+/* Image Section */
+.image-section{
+  height:150vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.batman{
+  width:min(90vw,1200px);
+  border-radius:24px;
+
+  opacity:0;
+  transform:scale(0.4) rotate(-5deg);
+
+  animation:imageReveal linear forwards;
+  animation-timeline:view();
+  animation-range:entry 10% cover 60%;
+}
+
+@keyframes textZoom{
+  from{
+    transform:scale(1);
+    opacity:1;
+  }
+  to{
+    transform:scale(2.5);
+    opacity:0;
+  }
+}
+
+@keyframes imageReveal{
+  from{
+    opacity:0;
+    transform:scale(0.4) rotate(-5deg);
+  }
+  to{
+    opacity:1;
+    transform:scale(1.1) rotate(0deg);
+  }
+}
