@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3D Carousel Shuffle</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+    height:100vh;
+    background:#000;
+}
+
+/* =========================
+   HEADLINE UI
+========================= */
+
+.headline{
+    position:fixed;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(92%, 900px);
+    z-index:200;
+    text-align:center;
+    padding:5px 10px;
+    border-radius:24px;
+
+    background:rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.12);
+
+    overflow:hidden;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.4),
+        inset 0 0 30px rgba(255,255,255,0.04);
+}
+
+/* Animated Glow */
+.headline-glow{
+    position:absolute;
+    width:250px;
+    height:250px;
+    background:radial-gradient(
+        circle,
+        rgba(140,0,255,0.45),
+        transparent 70%
+    );
+
+    top:-120px;
+    left:-80px;
+
+    animation:moveGlow 6s linear infinite;
+}
+
+@keyframes moveGlow{
+    0%{
+        transform:translateX(0px);
+    }
+    50%{
+        transform:translateX(250px);
+    }
+    100%{
+        transform:translateX(0px);
+    }
+}
+
+.headline h2{
+    position:relative;
+    z-index:2;
+
+    color:#fff;
+    font-size:25px;
+    font-weight:800;
+    letter-spacing:1px;
+    line-height:1.3;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.2),
+        0 0 20px rgba(140,0,255,0.3);
+}
+
+.headline h2 span{
+    display:block;
+    margin-top:10px;
+
+    font-size:16px;
+    font-weight:500;
+    letter-spacing:3px;
+    text-transform:uppercase;
+
+    color:#d5d5d5;
+}
+
+/* =========================
+   FOOTER UI
+========================= */
+
+.footer{
+    position:fixed;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+
+    width:max-content;
+    z-index:200;
+
+    padding:14px 28px;
+    border-radius:50px;
+
+    background:rgba(255,255,255,0.05);
+
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+
+    border:1px solid rgba(255,255,255,0.12);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,0.4);
+}
+
+.footer-line{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:2px;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #8c00ff,
+        #00e5ff,
+        transparent
+    );
+
+    animation:lineMove 3s linear infinite;
+}
+
+@keyframes lineMove{
+    0%{
+        transform:translateX(-100%);
+    }
+    100%{
+        transform:translateX(100%);
+    }
+}
+
+.footer p{
+    color:#fff;
+    font-size:15px;
+    letter-spacing:1px;
+    font-weight:500;
+}
+
+.footer span{
+    color:#00e5ff;
+    font-weight:700;
+
+    text-shadow:
+        0 0 10px rgba(0,229,255,0.6);
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .headline{
+        top:18px;
+        padding:18px 20px;
+        border-radius:20px;
+    }
+
+    .headline h2{
+        font-size:22px;
+    }
+
+    .headline h2 span{
+        font-size:12px;
+        letter-spacing:2px;
+    }
+
+    .footer{
+        width:90%;
+        text-align:center;
+        padding:14px 18px;
+    }
+
+    .footer p{
+        font-size:13px;
+        line-height:1.5;
+    }
+}
+
+/* VIDEO BG */
+.bg-video{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-2;
+}
+
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    z-index:-1;
+}
+
+/* CENTER AREA */
+.scene{
+    width:100%;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    perspective:1400px;
+}
+
+/* STACK */
+.card-container{
+    position:relative;
+    width:260px;
+    height:380px;
+    transform-style:preserve-3d;
+}
+
+/* CARD */
+.card{
+    position:absolute;
+    width:260px;
+    height:380px;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.5),
+        0 0 20px rgba(255,255,255,0.08);
+    transform-style:preserve-3d;
+    transition:transform 1.5s ease, opacity 1.5s ease;
+    opacity:0;
+}
+
+.card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* START BUTTON */
+.start-btn{
+    position:fixed;
+    bottom:100px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:6px 12px;
+    border:none;
+    border-radius:50px;
+    font-size:8px;
+    font-weight:bold;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(135deg,#ff006a,#6a00ff);
+    box-shadow:
+        0 0 20px rgba(255,0,106,0.5),
+        0 0 40px rgba(106,0,255,0.4);
+    transition:0.4s;
+    z-index:100;
+}
+
+.start-btn:hover{
+    transform:translateX(-50%) scale(1.08);
+}
+
+.start-btn:active{
+    transform:translateX(-50%) scale(0.96);
+}
+
+/* GLOW */
+.card::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,0.15),
+        transparent,
+        rgba(255,255,255,0.05)
+    );
+    pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND VIDEO -->
+<video class="bg-video" autoplay muted loop playsinline>
+    <source src="bg.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+<!-- HEADLINE -->
+<div class="headline">
+    <div class="headline-glow"></div>
+
+    <h2>
+        GOJO Satoru 3D Carousel Shuffle
+        <span>Using HTML, CSS & JS</span>
+    </h2>
+</div>
+
+<button class="start-btn" id="startBtn">
+    START EXPERIENCE
+</button>
+</div>
+<!-- MAIN SCENE -->
+<div class="scene">
+    <div class="card-container" id="carousel">
+
+        <!-- CHANGE IMAGE NAMES -->
+        <div class="card"><img src="gojo1.png"></div>
+        <div class="card"><img src="gojo2.jpg"></div>
+        <div class="card"><img src="gojo3.jpg"></div>
+        <div class="card"><img src="gojo4.jpg"></div>
+        <div class="card"><img src="gojo5.jpg"></div>
+        <div class="card"><img src="gojo6.jpg"></div>
+        <div class="card"><img src="gojo7.jpg"></div>
+        <div class="card"><img src="gojo8.png"></div>
+        <div class="card"><img src="gojo9.jpg"></div>
+
+    </div>
+</div>
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-line"></div>
+
+    <p>
+        Follow
+        <span>@skumar_webtech</span>
+        for more creative content ✨
+    </p>
+</footer>
+<script>
+const cards = document.querySelectorAll('.card');
+const startBtn = document.getElementById('startBtn');
+
+let angle = 0;
+let started = false;
+let radius = 420;
+
+function stackAnimation() {
+
+    cards.forEach((card, index) => {
+
+        // Initial stacked look
+        card.style.opacity = '1';
+
+        card.style.transform = `
+            translateY(${index * -8}px)
+            translateX(${index % 2 === 0 ? -8 : 8}px)
+            rotateZ(${index % 2 === 0 ? -6 : 6}deg)
+            scale(${1 - index * 0.03})
+        `;
+
+        card.style.zIndex = 100 - index;
+    });
+
+    // Shuffle effect
+    setTimeout(() => {
+
+        cards.forEach((card, index) => {
+
+            const randomX = (Math.random() - 0.5) * 700;
+            const randomY = (Math.random() - 0.5) * 500;
+            const randomR = (Math.random() - 0.5) * 100;
+
+            card.style.transform = `
+                translateX(${randomX}px)
+                translateY(${randomY}px)
+                rotateZ(${randomR}deg)
+                scale(0.9)
+            `;
+        });
+
+    }, 1200);
+
+    // Create 3D carousel
+    setTimeout(() => {
+        createCarousel();
+        autoRotate();
+    }, 3200);
+}
+
+function createCarousel() {
+
+    cards.forEach((card, index) => {
+
+        const theta = (360 / cards.length) * index;
+
+        card.style.transform = `
+            rotateY(${theta}deg)
+            translateZ(${radius}px)
+        `;
+
+        card.style.opacity = '1';
+    });
+}
+
+function autoRotate() {
+
+    setInterval(() => {
+
+        angle += 0.4;
+
+        document.getElementById('carousel').style.transform =
+            `rotateY(${angle}deg)`;
+
+    }, 16);
+}
+
+startBtn.addEventListener('click', () => {
+
+    if(started) return;
+
+    started = true;
+
+    startBtn.style.opacity = '0';
+    startBtn.style.pointerEvents = 'none';
+
+    stackAnimation();
+});
+</script>
+
+</body>
+</html>
